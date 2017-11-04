@@ -101,32 +101,6 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.21.0</version>
-                <configuration>
-                    <logDate>default</logDate>
-                    <autoPull>true</autoPull>
-                    <images>
-                        <image>
-                            <name>mongo:3.0.15</name>
-                            <run>
-                                <ports>
-                                    <port>27018:27017</port>
-                                </ports>
-                                <wait>
-                                    <time>60000</time>
-                                </wait>
-                                <log>
-                                    <prefix>mongo-container</prefix>
-                                    <color>yellow</color>
-                                </log>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
