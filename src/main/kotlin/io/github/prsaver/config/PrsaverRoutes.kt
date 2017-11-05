@@ -8,20 +8,23 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class PrsaverRoutes {
+class PrsaverRoutes(val userHandler: UserHandler,
+                    val personalRecordHandler: PersonalRecordHandler) {
 
     @Bean
-    fun apiRouter(userHandler: UserHandler, personalRecordHandler: PersonalRecordHandler) =
-        router {
-            (accept(MediaType.APPLICATION_JSON) and "/api").nest {
-                "/users".nest {
-                    GET("/{id}", userHandler::getUser)
-                    POST("/", userHandler::createUser)
-                }
-                "/pr".nest {
-                    GET("/{id}", personalRecordHandler::getPersonalRecord)
-                    POST("/", personalRecordHandler::createPersonalRecord)
-                }
+    fun apiRouter() = router {
+        (accept(MediaType.APPLICATION_JSON) and "/api").nest {
+            "/users".nest {
+                GET("/{id}", userHandler::getUser)
+                GET("/{id}/pr", userHandler::getAllPersonalRecords)
+                POST("/", userHandler::createUser)
+                DELETE("/{id}", userHandler::deleteUser)
+            }
+            "/pr".nest {
+                GET("/{id}", personalRecordHandler::getPersonalRecord)
+                POST("/", personalRecordHandler::createPersonalRecord)
+                DELETE("/{id}", personalRecordHandler::deletePersonalRecord)
             }
         }
+    }
 }

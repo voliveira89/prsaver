@@ -5,7 +5,7 @@ import io.github.prsaver.repositories.PersonalRecordRepository
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyExtractors
 import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.*
 import reactor.core.publisher.Mono
 import java.net.URI
 
@@ -14,11 +14,18 @@ class PersonalRecordHandler(val personalRecordRepository: PersonalRecordReposito
 
     fun getPersonalRecord(serverRequest: ServerRequest) =
         personalRecordRepository.findById(serverRequest.pathVariable("id"))
-            .flatMap { ServerResponse.ok().body(Mono.just(it), PersonalRecord::class.java) }
-            .switchIfEmpty(ServerResponse.notFound().build())
+            .flatMap { ok().body(Mono.just(it), PersonalRecord::class.java) }
+            .switchIfEmpty(notFound().build())
 
     fun createPersonalRecord(serverRequest: ServerRequest) =
         serverRequest.body(BodyExtractors.toMono(PersonalRecord::class.java))
             .flatMap { personalRecordRepository.save(it) }
-            .flatMap { ServerResponse.created(URI.create("/pr/" + it.id)).build() }
+            .flatMap { created(URI.create("/pr/" + it.id)).build() }
+
+    fun deletePersonalRecord(serverRequest: ServerRequest) =
+        personalRecordRepository.findById(serverRequest.pathVariable("id"))
+            .flatMap { personalRecordRepository.delete(it).then(ok().build()) }
+            .switchIfEmpty(notFound().build())
+
+    //TODO update personal record
 }
