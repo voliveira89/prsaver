@@ -9,6 +9,7 @@ import java.util.*
 data class PersonalRecord(@Id val id: String = UUID.randomUUID().toString(),
                           val userId: String,
                           val raceName: String,
+                          val location: String,
                           val distance: String,
                           val date: LocalDate,
                           val filePath: String)

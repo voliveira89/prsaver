@@ -19,11 +19,13 @@ class PrsaverRoutes(val userHandler: UserHandler,
                 GET("/{id}/pr", userHandler::getAllPersonalRecords)
                 POST("/", userHandler::createUser)
                 DELETE("/{id}", userHandler::deleteUser)
+                PUT("/", userHandler::updateUser)
             }
             "/pr".nest {
                 GET("/{id}", personalRecordHandler::getPersonalRecord)
                 POST("/", personalRecordHandler::createPersonalRecord)
                 DELETE("/{id}", personalRecordHandler::deletePersonalRecord)
+                PUT("/", personalRecordHandler::updatePersonalRecord)
             }
         }
     }

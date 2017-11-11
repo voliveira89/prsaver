@@ -23,6 +23,7 @@ class UserHandler(val userRepository: UserRepository, val personalRecordReposito
     fun getAllPersonalRecords(serverRequest: ServerRequest) =
         ok().body(personalRecordRepository.findByUserId(serverRequest.pathVariable("id")))
 
+    //TODO check if user is already signed up
     fun createUser(serverRequest: ServerRequest) =
         serverRequest.body(BodyExtractors.toMono(User::class.java))
             .flatMap {
@@ -33,9 +34,22 @@ class UserHandler(val userRepository: UserRepository, val personalRecordReposito
 
     fun deleteUser(serverRequest: ServerRequest) =
         userRepository.findById(serverRequest.pathVariable("id"))
-            .flatMap { userRepository.delete(it).then(ok().build()) }
+            .flatMap {
+                userRepository.delete(it)
+                    .then(ok().build())
+            }
             .switchIfEmpty(notFound().build())
 
-    //TODO update user
+    fun updateUser(serverRequest: ServerRequest) =
+        serverRequest.body(BodyExtractors.toMono(User::class.java))
+            .flatMap { user ->
+                userRepository.findById(user.id)
+                    .flatMap {
+                        userRepository.save(user)
+                            .then(ok().body(Mono.just(user), User::class.java))
+                    }
+                    .switchIfEmpty(notFound().build())
+            }
 }
+
 
